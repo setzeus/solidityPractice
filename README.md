@@ -1,1 +1,1 @@
-# Crytography-Smart-Contract-Practice
+# Cryptography-Smart-Contract-Practice
