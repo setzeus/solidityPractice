@@ -17,10 +17,12 @@
     <h1>Deploy Intro</h1>
     <h2 id="instructor"></h2>
 
-    <label for="name" class="col-lg-2 control-label">Instructor Name</label>
+    <img id="loader" src="https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif">
+
+    <label for="name" class="col-lg-2 control-label">Tester Name</label>
     <input id="name" type="text"></input>
 
-    <label for="name" class="col-lg-2 control-label">Instructor Age</label>
+    <label for="name" class="col-lg-2 control-label">Tester Age</label>
     <input id="age" type="text"></input>
 
     <button id="button">Update</button>
@@ -38,29 +40,11 @@
 
     web3.eth.defaultAccount = web3.eth.accounts[0];
 
-    var CoursetroContract = web3.eth.contract([
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_fName",
-				"type": "string"
-			},
-			{
-				"name": "_age",
-				"type": "uint256"
-			}
-		],
-		"name": "setInstructor",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
+    var userTestContract = web3.eth.contract([
 	{
 		"constant": true,
 		"inputs": [],
-		"name": "getInstructor",
+		"name": "getUser",
 		"outputs": [
 			{
 				"name": "",
@@ -74,22 +58,62 @@
 		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_fName",
+				"type": "string"
+			},
+			{
+				"name": "_age",
+				"type": "uint256"
+			}
+		],
+		"name": "setUser",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "age",
+				"type": "uint256"
+			}
+		],
+		"name": "User",
+		"type": "event"
 	}
 ]);
 
-var Coursetro = CoursetroContract.at('0xc93898152c644d3392e1ea65d452fbc9a0d7340a');
-console.log(Coursetro);
+var userTest = userTestContract.at('0x806244b872daa7e5b27080a822f0a2b1bbab357d');
+console.log(userTest);
 
-Coursetro.getInstructor(function(error, result) {
-  if (!error) {
-    $("#instructor").html(result[0]+' ()' + result[1] + ' years old');
+var userEvent = userTest.User();
+
+userEvent.watch(function(error, result) {
+  if(!error) {
+    $("#loader").hide();
+    $("#instructor").html(result.args.name + ' is ' + result.args.age + ' years old');
   } else {
+    $("#loader").hide();
     console.log(error);
   }
-})
+});
 
 $("#button").click(function() {
-  Coursetro.setInstructor($("#name").val(), $("#age").val());
+  userTest.setUser($("#name").val(), $("#age").val());
+  $("#loader").show();
 })
 
   </script>
