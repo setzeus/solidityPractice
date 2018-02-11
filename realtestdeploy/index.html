@@ -15,12 +15,18 @@
 <body>
   <div class="container">
     <h1>Deploy Intro</h1>
+    <span id="countIns"></span>
     <h2 id="instructor"></h2>
+    <span id="insTrans"></span>
+    <hr>
 
     <img id="loader" src="https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif">
 
-    <label for="name" class="col-lg-2 control-label">Tester Name</label>
-    <input id="name" type="text"></input>
+    <label for="fName" class="col-lg-2 control-label">First Name</label>
+    <input id="fName" type="text"></input>
+
+    <label for="lName" class="col-lg-2 control-label">Last Name</label>
+    <input id="lName" type="text"></input>
 
     <label for="name" class="col-lg-2 control-label">Tester Age</label>
     <input id="age" type="text"></input>
@@ -44,15 +50,83 @@
 	{
 		"constant": true,
 		"inputs": [],
+		"name": "getUsers",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_findUser",
+				"type": "address"
+			}
+		],
 		"name": "getUser",
 		"outputs": [
 			{
 				"name": "",
-				"type": "string"
+				"type": "uint256"
 			},
 			{
 				"name": "",
+				"type": "bytes16"
+			},
+			{
+				"name": "",
+				"type": "bytes16"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_address",
+				"type": "address"
+			},
+			{
+				"name": "_age",
 				"type": "uint256"
+			},
+			{
+				"name": "_fName",
+				"type": "bytes16"
+			},
+			{
+				"name": "_lName",
+				"type": "bytes16"
+			}
+		],
+		"name": "setUserTest",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "userTestsAccts",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
 			}
 		],
 		"payable": false,
@@ -64,8 +138,13 @@
 		"inputs": [
 			{
 				"indexed": false,
-				"name": "name",
-				"type": "string"
+				"name": "fName",
+				"type": "bytes16"
+			},
+			{
+				"indexed": false,
+				"name": "lName",
+				"type": "bytes16"
 			},
 			{
 				"indexed": false,
@@ -73,52 +152,31 @@
 				"type": "uint256"
 			}
 		],
-		"name": "User",
+		"name": "userInfo",
 		"type": "event"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_fName",
-				"type": "string"
-			},
-			{
-				"name": "_age",
-				"type": "uint256"
-			}
-		],
-		"name": "setUser",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "constructor"
 	}
 ]);
 
-var userTest = userTestContract.at('0xcf46fb5467d30af2f984942c9a4d96782fcf04e6');
+var userTest = userTestContract.at('0xa62d2a268d33c2f19841ab9976aa0cd0916d188d');
 console.log(userTest);
 
-var userEvent = userTest.User();
+var userEvent = userTest.userInfo({}, 'latest');
 
 userEvent.watch(function(error, result) {
   if(!error) {
-    $("#loader").hide();
-    $("#instructor").html(result.args.name + ' is ' + result.args.age + ' years old');
+    if(result.blockHash != $("#insTrans").html())
+            $("#loader").hide();
+    $("#insTrans").html('Block hash: ' + result.blockHash);
+    $("#instructor").html(web3.toAscii(result.args.fName) + '  ' + web3.toAscii(result.args.lName) + ' is ' + web3.toAscii(result.args.age) + ' years old');
   } else {
     $("#loader").hide();
     console.log(error);
   }
 });
 
+
 $("#button").click(function() {
-  userTest.setUser($("#name").val(), $("#age").val());
+  userTest.setUserTest(web3.eth.defaultAccount, $("#age").val(), $("#fName").val(), $("#lName").val());
   $("#loader").show();
 })
 
