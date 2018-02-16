@@ -1,10 +1,15 @@
 pragma solidity ^0.4.18;
 
 //16 person lottery that only unlocks once completely filled
-//start with list of available tickets that are number 1 - 16
-//users purchase a ticket, that is now removed from available tickets
-//a new array records, for users that send the right amount, the ticket number & address sent from
-//once all tickets are purchased, award an address, based on a pgrn, the total lottery amount
+//
+// array of available tickets that are numbered 1 - 16
+// an empty array of purchasedLotteryTickets strucs
+// purchasedLotteryTickets are strucs made up of an address purchaser & a uint ticketNumber
+// a new array records, for users that send the right amount, the ticket number & address sent from
+// once all tickets are purchased, award an address, based on a pgrn, the total lottery amount
+
+// buy ticket function (address, etherAmount, ticketChoice) return (confirmation, tickets remaining); if ticketChoice is not available or out of range, or if the etherAmount != .5 ether, reject ticket purchase
+// check remaining tickets function () return ([]uint availableTickets)
 
 contract LotteryPractice {
 
