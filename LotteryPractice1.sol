@@ -11,12 +11,6 @@ pragma solidity ^0.4.20;
 // buy ticket function (ticketChoice) return (confirmation, tickets remaining); if ticketChoice is not available or out of range, or if the etherAmount != .5 ether, reject ticket purchase
 // check remaining tickets function () return ([]uint availableTickets)
 
-// need to test workaround below since web3 doesn't support returning structs yet
-//function all(uint pos) public constant returns(uint id, uint value, uint time){
-//DonateInfo storage di = list[pos];
-//return (di.id, di.value, di.time)
-//}
-
 contract LotteryPractice1 {
 
         function LotteryPractice1 () {
@@ -53,7 +47,9 @@ contract LotteryPractice1 {
         lotteryTicket._ticketNumber = _ticketPurchasedNumber;
 
         _purchasedLotteryTickets.push(_ticketPurchaser);
-        delete _availableTickets[_ticketPurchasedNumber - 1];
+
+        uint testRemove = 16 - _availableTickets.length + 1;
+        remove(_ticketPurchasedNumber - testRemove);
 
         _purchasedLotteryTicket memory testStruct = _purchasedLotteryTicket(msg.sender,_ticketPurchasedNumber,msg.value);
 
@@ -73,6 +69,18 @@ contract LotteryPractice1 {
     function ticketsPurchased() public returns(_purchasedLotteryTicket[]) {
         return _surprisedIfThisWorks;
     }
+
+    function remove(uint index) private returns(uint[]) {
+        if (1 >= _availableTickets.length) return;
+
+        for (uint i = index; i<_availableTickets.length-1; i++){
+            _availableTickets[i] = _availableTickets[i+1];
+        }
+        delete _availableTickets[_availableTickets.length-1];
+        _availableTickets.length--;
+        return _availableTickets;
+    }
+
 
 
 }
