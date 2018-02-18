@@ -32,7 +32,20 @@ contract LotteryPractice1 {
         uint _etherReceived;
     }
 
+    event __purchasedLotteryTicket(
+        address ___ticketBuyer,
+        uint ___ticketNumber,
+        uint ___etherReceived
+    );
+
     _purchasedLotteryTicket[] _surprisedIfThisWorks;
+
+
+// try creating three private functions that push each new struct property of a new lottery purchase to an initially empty array. one for address, one for number & one for ether. Then just have another function that simply calls those three private functions & returns three individual arrays
+    function all(uint pos) private returns(address __ticketBuyer, uint __ticketNumber, uint __etherReceived) {
+        _purchasedLotteryTicket storage _PT = _surprisedIfThisWorks[pos];
+        return (_PT._ticketBuyer, _PT._ticketNumber, _PT._etherReceived);
+    }
 
     mapping(address => _purchasedLotteryTicket) _purchasedLotteryTicketBuyer;
 
@@ -62,13 +75,28 @@ contract LotteryPractice1 {
         return _availableTickets;
     }
 
-    function ticketsPurchasedAddresses() public returns(address[]) {
-        return _purchasedLotteryTickets;
+    function ticketsPurchased() public returns(address[],uint[],uint[]) {
+
+        address[] _ticketBuyerArr;
+        uint[] _ticketNumberArr;
+        uint[] _ticketEtherReceivedArr;
+
+        if(_availableTickets.length < 16) {
+
+        // for(uint i = 0; i <= 16 - _availableTickets.length; i++) {
+          //  _ticketBuyerArr.push(_surprisedIfThisWorks[i]._ticketBuyer);
+            //_ticketNumberArr.push(_surprisedIfThisWorks[i]._ticketNumber);
+            //_ticketEtherReceivedArr.push(_surprisedIfThisWorks[i]._etherReceived);
+        //}
+        _ticketBuyerArr.push(_surprisedIfThisWorks[0]._ticketBuyer);
+            _ticketNumberArr.push(_surprisedIfThisWorks[0]._ticketNumber);
+            _ticketEtherReceivedArr.push(_surprisedIfThisWorks[0]._etherReceived);
+
+        }
+        return (_ticketBuyerArr,_ticketNumberArr,_ticketEtherReceivedArr);
+
     }
 
-    function ticketsPurchased() public returns(_purchasedLotteryTicket[]) {
-        return _surprisedIfThisWorks;
-    }
 
     function remove(uint index) private returns(uint[]) {
         if (1 >= _availableTickets.length) return;
